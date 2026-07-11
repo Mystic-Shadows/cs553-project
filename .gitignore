@@ -46,6 +46,7 @@ Thumbs.db
 # =========================
 
 .vscode/
+.vs/
 .idea/
 *.swp
 *.swo

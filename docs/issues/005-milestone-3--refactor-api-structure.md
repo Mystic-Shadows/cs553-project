@@ -11,10 +11,10 @@ Refactor the API into a more maintainable structure.
 
 ## Requirements
 
-- [ ] Move task routes into routes/
+- [X] Move task routes into routes/
 - [ ] Create a service layer
-- [ ] Move SQL/database logic out of server.ts
-- [ ] Keep route handlers thin
+- [X] Move SQL/database logic out of server.ts
+- [X] Keep route handlers thin
 - [ ] Update documentation if needed
 
 ## Deliverable
