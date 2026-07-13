@@ -1,15 +1,14 @@
 export function validateRequest(_req: any, _res: any, _next: any) {
 
-    const title = _req.body?.title?.trim();
-
-    if (_req.method === "POST" && !validatePostTasks(title)) {
+    if ((_req.method === "POST" || _req.method === "PUT") && !validateTitle(_req)) {
         return _res.status(400).json({ error: "Bad Request", message: "Missing Title" });
     }
 
     _next();
 }
 
-function validatePostTasks(title: any) {
+function validateTitle(_req: any) {
+    const title = _req.body?.title?.trim();
     if (title) {
         return true;
     } else {

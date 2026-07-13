@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS-553 Project</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <main class="page">
+        <section class="panel">
+            <h1>CS-553 Project</h1>
+            <p>
+                Basic Form for interacting with the Project
+            </p>
+
+            <h2>Get Health</h2>
+            <p>Returns if the server is up</p>
+            <button id="get-health" type="button">Get Health</button>
+            <p id="health" class="health">Unknown</p>
+
+            <h2>Get Database Health</h2>
+            <p>Returns if the database is up</p>
+            <button id="get-database-health" type="button">Get Database Health</button>
+            <p id="database-health" class="health">Unknown</p>
+
+            <h2>Get Tasks</h2>
+            <p>Returns all tasks stored in the server</p>
+            <button id="get-tasks" type="button">Get Tasks</button>
+            <ul id="tasks" class="tasks"></ul>
+
+            <h2>Get Task</h2>
+            <p>Returns the task associated with the supplied ID</p>
+            <form id="get-task-form">
+                <label style="display: block; text-align: left;">Task ID</label>
+                <input id="get-task-id" name="get-task-id" type="number" required>
+                <button type="submit">Get Task</button>
+            </form>
+            <p id="task" class="task"></p>
+
+            <h2>Make Task (POST)</h2>
+            <p>Makes a new task</p>
+            <form id="post-task-form">
+                <label style="display: block; text-align: left;">Title</label>
+                <input id="post-task-title" name="post-task-title" type="text" required>
+                <label style="display: block; text-align: left;">Description</label>
+                <input id="post-task-description" name="post-task-description" type="text">
+                <label style="display: block; text-align: left;">Status</label>
+                <input id="post-task-status" name="post-task-status" type="text">
+                <button type="submit">Make Task</button>
+            </form>
+            <p id="post-status" class="status"></p>
+
+            <h2>Replace Task (PUT)</h2>
+            <p>Replaces a task or makes a new task (only if the id was previously used)</p>
+            <form id="put-task-form">
+                <label style="display: block; text-align: left;">Task ID</label>
+                <input id="put-task-id" name="put-task-id" type="number" required>
+                <label style="display: block; text-align: left;">Title</label>
+                <input id="put-task-title" name="put-task-title" type="text" required>
+                <label style="display: block; text-align: left;">Description</label>
+                <input id="put-task-description" name="put-task-description" type="text">
+                <label style="display: block; text-align: left;">Status</label>
+                <input id="put-task-status" name="put-task-status" type="text">
+                <button type="submit">Make Task</button>
+            </form>
+            <p id="put-status" class="status"></p>
+
+            <h2>Edit Task (PATCH)</h2>
+            <p>Modifies the task that has the supplied ID</p>
+            <form id="patch-task-form">
+                <label style="display: block; text-align: left;">ID</label>
+                <input id="patch-task-id" name="patch-task-id" type="number" required>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Title</label>
+                        <input id="patch-task-title" name="patch-task-title" type="text">
+                    </div>
+                    <button type="submit" name="action" value="title">Edit Title</button>
+                </div>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Description</label>
+                        <input id="patch-task-description" name="patch-task-description" type="text">
+                    </div>
+                    <button type="submit" name="action" value="description">Edit Description</button>
+                </div>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Status</label>
+                        <input id="patch-task-status" name="patch-task-status" type="text">
+                    </div>
+                    <button type="submit" name="action" value="status">Edit Status</button>
+                </div>
+            </form>
+            <p id="patch-status" class="status"></p>
+
+            <h2>Delete Task</h2>
+            <p>Removes the task with the supplied ID</p>
+            <form id="delete-task-form">
+                <label style="display: block; text-align: left;">Task ID</label>
+                <input id="delete-task-id" name="delete-task-id" type="number" required>
+                <button type="submit">Delete Task</button>
+            </form>
+            <p id="delete-status" class="status"></p>
+        </section>
+    </main>
+
+    <script type="module" src="./scripts/health.js"></script>
+    <script type="module" src="./scripts/databaseHealth.js"></script>
+    <script type="module" src="./scripts/getTasks.js"></script>
+    <script type="module" src="./scripts/getTask.js"></script>
+    <script type="module" src="./scripts/postTasks.js"></script>
+    <script type="module" src="./scripts/deleteTasks.js"></script>
+    <script type="module" src="./scripts/putTasks.js"></script>
+    <script type="module" src="./scripts/patchTasks.js"></script>
+
+</body>
+</html>
