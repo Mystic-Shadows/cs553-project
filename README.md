@@ -1,233 +1,135 @@
+# CS 553 Project
 
-# CS453/553 Client-Server Architecture Project
+## Quickstart
+1. Run `npm install` at the following locations:
+	- `cs553-project/`
+	- `cs553-project/apps/`
+	- `cs553-project/apps/api`
+2. Go back to `cs553-project/` and run `npm run db:start`
+3. Next, run `$ psql -h localhost -p 5432 -U postgres -d cs453`
+4. Run the server using `npm run dev`
+5. In another terminal, run the test client using Run the server using `npm run client:dev`
+6. Connect to the website through a browser at `http://localhost:5173/`
 
-This repository contains the **starter template** for the semester project in  
-**CS453 / CS553 – Client/Server Architectures**.
+### Notes
+- The database is exposed on port `5432`
+- The server is exposed on port `3000`
 
-Students will build and extend a distributed web application over the course
-of the semester. The system will evolve through several architectural stages,
-mirroring the historical evolution of modern web systems.
+### Other Commands
+- Close database: `npm run db:stop`
+- Reset database: `npm run db:stop`
 
-The goal of the project is to help students understand **how real client/server
-systems are designed and built**, including:
-
-- REST API design
-- database integration
-- authentication and authorization
-- multi-service architectures
-- real-time communication
-- modern API technologies
-
----
-
-# Project Overview
-
-The semester project is a **Task / Project Management System**.
-
-The application allows users to:
-
-- create projects
-- create tasks within projects
-- assign tasks to users
-- track task status
-- comment on tasks
-- view project activity
-
-This domain is intentionally simple so that the focus remains on **system
-architecture and communication between components**, rather than complex
-business logic.
-
----
-
-# Architecture Overview
-
-The system follows a typical web architecture.
-
-```shell
-Browser Client
-|
-v
-REST API
-|
-v
-PostgreSQL
-```
-
-
-Over the semester, the architecture will evolve to include additional
-components such as authentication services, real-time communication,
-and potentially additional APIs.
-
-Example extended architecture:
-
-```shell
-Browser Client
-|
-v
-API Layer
-/
-Auth API Task API
-|
-v
-PostgreSQL
-```
-
----
-
-# Technology Stack
-
-The default project stack is:
-
-Server
-- Node.js
-- TypeScript
-- Express
-
-Database
-- PostgreSQL
-
-Development Tools
-- Docker (for database)
-- npm
-- Git
-
-Students who prefer Python may implement the server using **FastAPI**, but
-all examples and starter code will use **TypeScript**.
-
----
-
-# Repository Structure
-
-```shell
-cs453-project-template
-│
+## File Structure
+```text
+cs553-project
 ├── apps
-│ ├── api
-│ │ Server-side application
-│ │
-│ └── client
-│ Simple browser client
-│
+│   ├── api
+│   │   ├── src
+│   │   │   ├── config
+│   │   │   │   └── env.ts
+│   │   │   ├── db
+│   │   │   │   └── pool.ts
+│   │   │   ├── health
+│   │   │   │   ├── dbHealth.ts
+│   │   │   │   └── health.ts
+│   │   │   ├── middleware
+│   │   │   │   ├── idValidator.ts
+│   │   │   │   ├── requestLogger.ts
+│   │   │   │   └── validator.ts
+│   │   │   ├── tasks
+│   │   │   │   ├── deleteTasks.ts
+│   │   │   │   ├── getTask.ts
+│   │   │   │   ├── getTasks.ts
+│   │   │   │   ├── patchTasks.ts
+│   │   │   │   ├── postTasks.ts
+│   │   │   │   └── putTasks.ts
+│   │   │   └── server.ts
+│   │   ├── README.md
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── client
+│   │   └── README.md
+│   ├── testClient
+│   │   ├── scripts
+│   │   │   ├── databaseHealth.js
+│   │   │   ├── deleteTasks.js
+│   │   │   ├── env.js
+│   │   │   ├── getTask.js
+│   │   │   ├── getTasks.js
+│   │   │   ├── health.js
+│   │   │   ├── patchTasks.js
+│   │   │   ├── postTasks.js
+│   │   │   └── putTasks.js
+│   │   ├── index.html
+│   │   ├── README.md
+│   │   └── style.css
+│   ├── package-lock.json
+│   └── package.json
 ├── database
-│ Database schema, migrations, and seed data
-│
+│   ├── README.md
+│   └── schema.sql
 ├── docs
-│ Architecture documentation
-│
+│   ├── issues
+│   │   ├── 003-milestone-1--basic-task-api.md
+│   │   ├── 004-milestone-2--full-task-crud.md
+│   │   ├── 005-milestone-3--refactor-api-structure.md
+│   │   ├── 006-milestone-4--expand-data-model.md
+│   │   ├── 007-milestone-5--authentication.md
+│   │   ├── 008-milestone-6--authorization-and-ownership.md
+│   │   ├── 009-milestone-7--real-time-updates-with-websockets.md
+│   │   ├── 010-milestone-8--graphql-api-extension.md
+│   │   ├── 011-instructor-task--create-milestone-rubrics.md
+│   │   └── 012-instructor-task--create-student-setup-guide.md
+│   ├── architecture.md
+│   └── deployment.md
 ├── scripts
-│ Utility scripts for development
-│
+│   ├── create-issues.sh
+│   ├── finish-issue.sh
+│   ├── pull-issue.sh
+│   ├── README.md
+│   ├── review-pr.sh
+│   └── start-issue.sh
+├── AGENTS.md
+├── answers.md
+├── biome.json
+├── DevelopmentToods.md
 ├── docker-compose.yml
-│ Starts PostgreSQL database
-│
+├── IntroForStudent.md
+├── openapi.yaml
+├── package-lock.json
+├── package.json
 └── README.md
 ```
+## Example `curl` Commands
+### Get Health
+`curl http://localhost:3000/health`
 
----
+### Get Database Health
+`curl http://localhost:3000/db-health`
 
-# Development Setup
+### Get Tasks
+`curl http://localhost:3000/tasks`
 
-## 1. Clone the repository
+### Get Tasks/:id
+Needs a task to be created first.
 
-```shell
-git clone <your-repository-url>
-cd cs453-project-template
-```
+`curl http://localhost:3000/tasks/1`
 
-## 2. Start the database
+### Post Tasks
+`curl -X POST http://localhost:3000/tasks -H "Content-Type: application/json" -d '{"title": "lab 6"}'`
 
-This project uses Docker to run PostgreSQL locally.
+### Put Tasks/:id
+Needs a task to be created first.
 
-```shell
-docker-compose up -d
-```
+`curl -X PUT http://localhost:3000/tasks/1 -H "Content-Type: application/json" -d '{"title": "lab 6"}'`
 
-This will start a PostgreSQL database container.
+### Patch Tasks/:id
+Needs a task to be created first.
 
----
+`curl -X PATCH http://localhost:3000/tasks/1 -H "Content-Type: application/json" -d '{"title": "lab 6"}'`
 
-## 3. Install dependencies
+### Delete Tasks/:id
+Needs a task to be created first.
 
-```shell
-cd apps/api
-npm install
-```
-
----
-
-## 4. Run the server
-```shell
-npm run dev
-```
-
-
-The API server should start locally.
-
----
-
-# Project Milestones
-
-The project will evolve over several milestones during the semester.
-
-### Milestone 1 – REST API
-
-Students will implement:
-
-- REST endpoints
-- database integration
-- CRUD operations
-- request validation
-
----
-
-### Milestone 2 – Authentication
-
-Students will add:
-
-- user accounts
-- password hashing
-- login endpoints
-- JWT authentication
-- protected routes
-
----
-
-### Milestone 3 – Architectural Extensions
-
-Students will extend the system with at least one of the following:
-
-- WebSockets for real-time updates
-- GraphQL API
-- multi-service architecture
-- asynchronous messaging
-- advanced API documentation
-
-Graduate students will complete an additional architecture extension and
-design analysis.
-
----
-
-# Learning Goals
-
-By completing this project students should understand:
-
-- how client/server systems communicate
-- how APIs are designed and implemented
-- how databases integrate with web services
-- how authentication works in distributed systems
-- how modern web architectures evolve over time
-
----
-
-# Academic Integrity
-
-All work submitted for this project must be your own.
-
-Students may use documentation and external references, but copying code
-from other students or online repositories is considered academic misconduct.
-
----
-
-# License
-
-This repository is provided for educational use in CS453/553.
+`curl -X DELETE http://localhost:3000/tasks/1`
