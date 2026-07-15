@@ -17,7 +17,7 @@ export async function postTasks(_req: any, _res: any) {
 		console.log(`${error}`)
 		_res.status(500).json({
 			status: "error",
-			message: "Failed to create task",
+			database: "disconnected",
 		});
 	}
 }

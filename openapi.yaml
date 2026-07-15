@@ -1,0 +1,314 @@
+openapi: 3.0.3
+info:
+  title: CS-553 Project
+  version: 1.0.0
+  description: This API stores tasks.
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Server is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  service:
+                    type: string
+                    example: "cs553-api"
+  /db-health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Database is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  database:
+                    type: string
+                    example: "connected"
+                  currentTime:
+                    type: string
+                    example: "2026-07-14T03:53:33.567Z"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+  /tasks:
+    get:
+      summary: Gets the list of all tasks
+      responses:
+        "200":
+          description: List of all tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReturnTask"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    post:
+      summary: Makes a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTask"
+      responses:
+        "201":
+          description: Successfully created task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnTask"
+        "400":
+          description: Title is missing or misformated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+  /tasks/{id}:
+    get:
+      summary: Gets the task with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The task ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: The requested task was returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnTask"
+        "400":
+          description: ID is not a number, is zero or less, or greater than the max ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "404":
+          description: Task with supplied id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    put:
+      summary: replaces the task with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The task ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTask"
+      responses:
+        "200":
+          description: The requested task was replaced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnTask"
+        "201":
+          description: A new task was made at the ID number supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnTask"
+        "400":
+          description: There is an issue with the ID or Title. The ID could be not a number, zero or less, or greater than the current max ID. The title could be missing or malformed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    patch:
+      summary: updates the task with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The task ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchTask"
+      responses:
+        "200":
+          description: The requested task was updated (Must have one field other than 'id' to receive. Will get a 400 if only 'id' is filled)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnTask"
+        "400":
+          description: Request Issue (Missing Fields, Invalid Type, Invalid Data)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "404":
+          description: Task with supplied id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    delete:
+      summary: deletes the task with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The task ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "204":
+          description: The requested task was deleted
+        "404":
+          description: Task with supplied id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+components:
+  schemas:
+    DatabaseError:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        database:
+          type: string
+          example: disconnected
+    ReturnTask:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Create Client"
+        description:
+          type: string
+          example: "As a tester, I want an interactive form that lets me test the routes."
+        status:
+          type: string
+          example: "done"
+        createdAt:
+          type: string
+          example: "2026-07-14T03:53:33.567Z"
+        updatedAt:
+          type: string
+          example: "2026-07-14T03:53:33.567Z"
+    CreateTask:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: "Create Client"
+        description:
+          type: string
+          example: "As a tester, I want an interactive form that lets me test the routes."
+        status:
+          type: string
+          example: "done"
+    PatchTask:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Create Client"
+        description:
+          type: string
+          example: "As a tester, I want an interactive form that lets me test the routes."
+        status:
+          type: string
+          example: "done"
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Missing or Malformed Title"
+    NotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Task not found.

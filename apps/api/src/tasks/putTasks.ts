@@ -23,7 +23,7 @@ export async function putTasks(_req: any, _res: any) {
 	} catch (error) {
 		_res.status(500).json({
 			status: "error",
-			message: "Failed to create task",
+			database: "disconnected",
 		});
 	}
 }

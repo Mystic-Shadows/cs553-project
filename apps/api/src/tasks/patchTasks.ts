@@ -12,7 +12,7 @@ export async function patchTasks(_req: any, _res: any) {
 		if (response === null) {
 			_res.status(400).json({ error: "No changes in request" });
 		} else if (response.rows.length === 0) {
-			_res.status(404).json({ error: "Item not found" });
+			_res.status(404).json({ error: "Task not found" });
 		} else {
 			_res.status(200).json({
 				task: response.rows[0]
@@ -23,7 +23,7 @@ export async function patchTasks(_req: any, _res: any) {
 		console.log(`${error}`)
 		_res.status(500).json({
 			status: "error",
-			message: "Failed to update task",
+			database: "disconnected",
 		});
 	}
 }

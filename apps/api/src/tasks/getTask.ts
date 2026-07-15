@@ -15,7 +15,7 @@ export async function getTask(_req: any, _res: any) {
 		);
 
 		if (response.rows.length == 0) {
-			_res.status(404).json({ error: "Item not found" });
+			_res.status(404).json({ error: "Task not found" });
 		} else {
 			_res.json(response.rows[0]);
 		}
@@ -23,7 +23,7 @@ export async function getTask(_req: any, _res: any) {
 		console.error("Failed to fetch tasks:", error);
 		_res.status(500).json({
 			status: "error",
-			message: "Failed to fetch tasks",
+			database: "disconnected",
 		});
 	}
 }

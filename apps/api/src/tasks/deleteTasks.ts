@@ -15,7 +15,7 @@ export async function deleteTasks(_req: any, _res: any) {
 		console.error("Failed to fetch tasks:", error);
 		_res.status(500).json({
 			status: "error",
-			message: "Failed to fetch tasks",
+			database: "disconnected",
 		});
 	}
 }
