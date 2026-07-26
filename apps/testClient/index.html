@@ -47,6 +47,10 @@
                 <input id="post-task-description" name="post-task-description" type="text">
                 <label style="display: block; text-align: left;">Status</label>
                 <input id="post-task-status" name="post-task-status" type="text">
+                <label style="display: block; text-align: left;">Assignee</label>
+                <input id="post-task-assignee" name="post-task-assignee" type="number">
+                <label style="display: block; text-align: left;">Project</label>
+                <input id="post-task-project" name="post-task-project" type="number">
                 <button type="submit">Make Task</button>
             </form>
             <p id="post-status" class="status"></p>
@@ -62,6 +66,10 @@
                 <input id="put-task-description" name="put-task-description" type="text">
                 <label style="display: block; text-align: left;">Status</label>
                 <input id="put-task-status" name="put-task-status" type="text">
+                <label style="display: block; text-align: left;">Assignee</label>
+                <input id="put-task-assignee" name="put-task-assignee" type="number">
+                <label style="display: block; text-align: left;">Project</label>
+                <input id="put-task-project" name="put-task-project" type="number">
                 <button type="submit">Make Task</button>
             </form>
             <p id="put-status" class="status"></p>
@@ -91,6 +99,20 @@
                         <input id="patch-task-status" name="patch-task-status" type="text">
                     </div>
                     <button type="submit" name="action" value="status">Edit Status</button>
+                </div>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Assignee</label>
+                        <input id="patch-task-assignee" name="patch-task-assignee" type="number">
+                    </div>
+                    <button type="submit" name="action" value="assignee">Edit Assignee</button>
+                </div>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Project</label>
+                        <input id="patch-task-project" name="patch-task-project" type="number">
+                    </div>
+                    <button type="submit" name="action" value="project">Edit Project</button>
                 </div>
             </form>
             <p id="patch-status" class="status"></p>

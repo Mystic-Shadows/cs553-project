@@ -6,9 +6,11 @@ export async function putTasks(_req: any, _res: any) {
 
 	const description = _req.body?.description?.trim();
 	const status = _req.body?.status?.trim();
+	const assignee = Number(_req.body?.assignee?.trim());
+	const project = Number(_req.body?.project?.trim());
 
 	try {
-		const response = await makeTask(id, title, description, status);
+		const response = await makeTask(id, title, description, status, assignee, project);
 
 		if (response.rows[0].updatedAt.getTime() === response.rows[0].createdAt.getTime()) {
 			_res.status(201).json({
@@ -28,22 +30,28 @@ export async function putTasks(_req: any, _res: any) {
 	}
 }
 
-async function makeTask(id: any, title: any, description: any, status: any) {
+async function makeTask(id: any, title: any, description: any, status: any, assignee: any, project: any) {
 
 	// must set defaults if needed (for update section)
-	if (!description || description === "") {
-		description = null;
+	if (!description) {
+		description = ``;
 	}
 	if (!status || status === "") {
 		status = `todo`;
 	}
+	if (!assignee) {
+		assignee = 0;
+	}
+	if (!project) {
+		project = 0;
+	}
 
-	const queryValues = [id, title, description, status];
-	const query = `INSERT INTO tasks (id, title, description, status)
-				   VALUES ($1, $2, $3, $4)
+	const queryValues = [id, title, description, status, assignee, project];
+	const query = `INSERT INTO tasks (id, title, description, status, assignee, project)
+				   VALUES ($1, $2, $3, $4, $5, $6)
 				   ON CONFLICT (id)
-				   DO UPDATE SET title=EXCLUDED.title, description=EXCLUDED.description, status=EXCLUDED.status, updated_at=NOW()
-				   RETURNING id::int, title, description, status, created_at AS "createdAt", updated_at AS "updatedAt"`;
+				   DO UPDATE SET title=EXCLUDED.title, description=EXCLUDED.description, status=EXCLUDED.status, assignee=EXCLUDED.assignee, project=EXCLUDED.project, updated_at=NOW()
+				   RETURNING id::int, title, description, status, assignee, project, created_at AS "createdAt", updated_at AS "updatedAt"`;
 
 	return pool.query(query, queryValues);
 }

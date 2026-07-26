@@ -3,8 +3,10 @@ import cors from "cors";
 import { env } from "./config/env";
 
 import { logRequest } from "./middleware/requestLogger";
-import { validateRequest } from "./middleware/validator";
-import { validateId } from "./middleware/idValidator";
+import { validateTasks, validateTasksId } from "./middleware/tasksValidators";
+import { validateProjects, validateProjectsId } from "./middleware/projectsValidators";
+import { validateUsers, validateUsersId } from "./middleware/usersValidators";
+
 
 import { health } from "./health/health";
 import { dbHealth } from "./health/dbHealth";
@@ -12,9 +14,23 @@ import { dbHealth } from "./health/dbHealth";
 import { getTasks } from "./tasks/getTasks";
 import { getTask } from "./tasks/getTask";
 import { postTasks } from "./tasks/postTasks";
-import { putTasks } from "./tasks/putTasks"
-import { deleteTasks } from "./tasks/deleteTasks"
-import { patchTasks } from "./tasks/patchTasks"
+import { putTasks } from "./tasks/putTasks";
+import { deleteTasks } from "./tasks/deleteTasks";
+import { patchTasks } from "./tasks/patchTasks";
+
+import { getProjects } from "./projects/getProjects";
+import { postProjects } from "./projects/postProjects";
+import { getProject } from "./projects/getProject";
+import { patchProjects } from "./projects/patchProjects";
+import { deleteProjects } from "./projects/deleteProjects";
+import { putProjects } from "./projects/putProjects";
+
+import { getUsers } from "./users/getUsers";
+import { getUser } from "./users/getUser";
+import { postUsers } from "./users/postUsers";
+import { putUsers } from "./users/putUsers";
+import { patchUsers } from "./users/patchUsers";
+import { deleteUsers } from "./users/deleteUsers";
 
 const app = express();
 
@@ -28,8 +44,18 @@ app.use(cors({
 // Initial Middleware
 app.use(logRequest);
 app.use(express.json());
-app.use(validateRequest);
-app.use("/tasks/:id", validateId);
+
+app.use("/tasks", validateTasks);
+app.use("/tasks/:id", validateTasks);
+app.use("/tasks/:id", validateTasksId);
+
+app.use("/projects", validateProjects);
+app.use("/projects/:id", validateProjects);
+app.use("/projects/:id", validateProjectsId);
+
+app.use("/users", validateUsers);
+app.use("/users/:id", validateUsers);
+app.use("/users/:id", validateUsersId);
 
 // Health Routes
 app.get("/health", health);
@@ -42,6 +68,22 @@ app.get("/tasks/:id", getTask);
 app.put("/tasks/:id", putTasks);
 app.delete("/tasks/:id", deleteTasks);
 app.patch("/tasks/:id", patchTasks);
+
+// Project Routes
+app.get("/projects", getProjects);
+app.post("/projects", postProjects);
+app.get("/projects/:id", getProject);
+app.patch("/projects/:id", patchProjects);
+app.delete("/projects/:id", deleteProjects);
+app.put("/projects/:id", putProjects);
+
+// User Routes
+app.get("/users", getUsers);
+app.post("/users", postUsers);
+app.get("/users/:id", getUser);
+app.patch("/users/:id", patchUsers);
+app.delete("/users/:id", deleteUsers);
+app.put("/users/:id", putUsers);
 
 // Final Middleware
 app.use((_req, res) => { res.status(404).json({ error: "Not found" }); });

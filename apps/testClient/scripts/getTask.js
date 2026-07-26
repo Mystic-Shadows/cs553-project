@@ -29,7 +29,7 @@ async function getTask(event) {
             throw new Error(`GET /tasks/:id failed with status ${response.status}`);
         } else {
             const task = await response.json();
-            getTaskText.textContent = `${task.id}. ${task.title}: [${task.status}] ${task.description} (${task.createdAt}/${task.updatedAt})`;
+            getTaskText.textContent = `${task.id}. ${task.project}/${task.title}: [${task.status}] {${task.assignee}} ${task.description} (${task.createdAt}/${task.updatedAt})`;
         }
 
     } catch (error) {

@@ -11,11 +11,11 @@ Introduce relational data modeling.
 
 ## Requirements
 
-- [ ] Add users table
-- [ ] Add projects table
-- [ ] Add task-to-project relationship
-- [ ] Add task-to-user assignment relationship
-- [ ] Add appropriate foreign keys
+- [X] Add users table
+- [X] Add projects table
+- [X] Add task-to-project relationship
+- [X] Add task-to-user assignment relationship
+- [X] Add appropriate foreign keys
 
 ## Deliverable
 

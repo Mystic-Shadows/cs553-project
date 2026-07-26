@@ -26,7 +26,7 @@ async function getTasks() {
         getTasksList.replaceChildren();
         for (const task of data.tasks) {
             const li = document.createElement("li");
-            li.textContent = `${task.id}. ${task.title}: [${task.status}] ${task.description} (${task.createdAt}/${task.updatedAt})`;
+            li.textContent = `${task.id}. ${task.project}/${task.title}: [${task.status}] {${task.assignee}} ${task.description} (${task.createdAt}/${task.updatedAt})`;
             getTasksList.appendChild(li);
         }
 

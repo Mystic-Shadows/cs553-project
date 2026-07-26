@@ -8,6 +8,8 @@ const putTaskId = document.querySelector("#put-task-id");
 const putTaskTitle = document.querySelector("#put-task-title");
 const putTaskDescription = document.querySelector("#put-task-description");
 const putTaskStatus = document.querySelector("#put-task-status");
+const putTaskAssignee = document.querySelector("#put-task-assignee");
+const putTaskProject = document.querySelector("#put-task-project");
 
 /*
     OUTPUT
@@ -24,6 +26,8 @@ async function putTasks(event) {
     const title = putTaskTitle.value.trim();
     const description = putTaskDescription.value.trim();
     const status = putTaskStatus.value.trim();
+    const assignee = putTaskAssignee.value;
+    const project = putTaskProject.value;
 
     if (!title) {
         putTaskText.textContent = `Invalid Task Submitted`;
@@ -36,7 +40,7 @@ async function putTasks(event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ title, description, status })
+            body: JSON.stringify({ title, description, status, assignee, project })
         })
 
         if (response.status === 400) {
@@ -47,7 +51,7 @@ async function putTasks(event) {
             const data = await response.json();
             const task = data.task;
             console.log(task);
-            putTaskText.textContent = `Updated or made task => ${task.id}. ${task.title}: [${task.status}] ${task.description} (${task.createdAt}/${task.updatedAt})`;
+            putTaskText.textContent = `Updated or made task => ${task.id}. ${task.project}/${task.title}: [${task.status}] {${task.assignee}} ${task.description} (${task.createdAt}/${task.updatedAt})`;
         }
 
     } catch (error) {
