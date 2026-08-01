@@ -5,6 +5,8 @@ export async function getUsers(_req: any, _res: any) {
 		const response = await pool.query(
 			`SELECT id,
 					username,
+					email,
+					role,
 					created_at AS "createdAt",
 					updated_at AS "updatedAt"
 			FROM users

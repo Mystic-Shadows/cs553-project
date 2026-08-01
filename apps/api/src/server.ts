@@ -6,7 +6,8 @@ import { logRequest } from "./middleware/requestLogger";
 import { validateTasks, validateTasksId } from "./middleware/tasksValidators";
 import { validateProjects, validateProjectsId } from "./middleware/projectsValidators";
 import { validateUsers, validateUsersId } from "./middleware/usersValidators";
-
+import { validateAuthorizations } from "./middleware/authorizationsValidators";
+import { authenticateToken } from "./middleware/validateToken";
 
 import { health } from "./health/health";
 import { dbHealth } from "./health/dbHealth";
@@ -32,6 +33,13 @@ import { putUsers } from "./users/putUsers";
 import { patchUsers } from "./users/patchUsers";
 import { deleteUsers } from "./users/deleteUsers";
 
+import { getAuthorizations } from "./authorizations/getAuthorizations";
+import { postAuthorizations } from "./authorizations/postAuthorizations";
+import { deleteAuthorizations } from "./authorizations/deleteAuthorizations";
+
+import { login } from "./login/login"
+import { register } from "./register/register";
+
 const app = express();
 
 app.use(cors({
@@ -45,21 +53,25 @@ app.use(cors({
 app.use(logRequest);
 app.use(express.json());
 
-app.use("/tasks", validateTasks);
-app.use("/tasks/:id", validateTasks);
-app.use("/tasks/:id", validateTasksId);
+// Register/Login Routes
+app.post("/login", login);
+app.post("/register", register);
 
-app.use("/projects", validateProjects);
-app.use("/projects/:id", validateProjects);
-app.use("/projects/:id", validateProjectsId);
+// Validation Middleware
+app.use("/tasks", authenticateToken, validateTasks);
+app.use("/tasks/:id", authenticateToken, validateTasks, validateTasksId);
 
-app.use("/users", validateUsers);
-app.use("/users/:id", validateUsers);
-app.use("/users/:id", validateUsersId);
+app.use("/projects", authenticateToken, validateProjects);
+app.use("/projects/:id", authenticateToken, validateProjects, validateProjectsId);
+
+app.use("/users", authenticateToken, validateUsers);
+app.use("/users/:id", authenticateToken, validateUsers, validateUsersId);
+
+app.use("/authorizations", authenticateToken, validateAuthorizations);
 
 // Health Routes
 app.get("/health", health);
-app.get("/db-health", dbHealth);
+app.get("/db-health", authenticateToken, dbHealth);
 
 // Task Routes
 app.get("/tasks", getTasks);
@@ -84,6 +96,11 @@ app.get("/users/:id", getUser);
 app.patch("/users/:id", patchUsers);
 app.delete("/users/:id", deleteUsers);
 app.put("/users/:id", putUsers);
+
+// Authorization Routes
+app.get("/authorizations", getAuthorizations);
+app.post("/authorizations", postAuthorizations);
+app.delete("/authorizations", deleteAuthorizations);
 
 // Final Middleware
 app.use((_req, res) => { res.status(404).json({ error: "Not found" }); });

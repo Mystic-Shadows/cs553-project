@@ -4,6 +4,8 @@ export async function deleteProjects(_req: any, _res: any) {
 	const id = _req.params.id;
 	try {
 		const response = await pool.query(`DELETE FROM projects WHERE id=$1`, [id]);
+		await pool.query(`DELETE FROM authorizations WHERE project_id=$1`, [id]);
+		await pool.query(`UPDATE tasks SET project=0 WHERE project=$1`, [id]);
 
 		if (response.rowCount == 0) {
 			_res.status(404).json({ error: "Project not found" });

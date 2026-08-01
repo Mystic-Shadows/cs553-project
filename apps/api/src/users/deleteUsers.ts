@@ -4,6 +4,9 @@ export async function deleteUsers(_req: any, _res: any) {
 	const id = _req.params.id;
 	try {
 		const response = await pool.query(`DELETE FROM users WHERE id=$1`, [id]);
+		await pool.query(`DELETE FROM authorizations WHERE user_id=$1`, [id]);
+		await pool.query(`UPDATE tasks SET assignee=0 WHERE assignee=$1`, [id]);
+		await pool.query(`UPDATE projects SET owner=0 WHERE owner=$1`, [id]);
 
 		if (response.rowCount == 0) {
 			_res.status(404).json({ error: "User not found" });

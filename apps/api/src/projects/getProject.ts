@@ -6,6 +6,8 @@ export async function getProject(_req: any, _res: any) {
 		const response = await pool.query(
 			`SELECT id,
 					project,
+					owner,
+					description,
 					created_at AS "createdAt",
 					updated_at AS "updatedAt"
 			FROM projects

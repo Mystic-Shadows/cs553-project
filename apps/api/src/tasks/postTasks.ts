@@ -34,26 +34,29 @@ async function makeTask(title: any, description: any, status: any, assignee: any
 		queryHeaders += `, description`;
 		queryPlaceholders += `, $${nextParamCount}`;
 		queryValues.push(description);
+		nextParamCount++;
 	}
 
 	if (status) {
 		queryHeaders += `, status`;
 		queryPlaceholders += `, $${nextParamCount}`;
 		queryValues.push(status);
+		nextParamCount++;
 	}
 
 	if (assignee) {
 		queryHeaders += `, assignee`;
 		queryPlaceholders += `, $${nextParamCount}`;
 		queryValues.push(assignee);
+		nextParamCount++;
 	}
 
 	if (project) {
 		queryHeaders += `, project`;
 		queryPlaceholders += `, $${nextParamCount}`;
 		queryValues.push(project);
+		nextParamCount++;
 	}
-
 	const query = `INSERT INTO tasks (${queryHeaders}) VALUES (${queryPlaceholders}) RETURNING id::int, title, description, status, assignee, project, created_at AS "createdAt", updated_at AS "updatedAt"`;
 
 	return pool.query(query, queryValues);

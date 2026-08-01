@@ -92,7 +92,7 @@ async function updateTask(id: any,
 		needsComma = true;
 	}
 
-	query += `, updated_at=NOW() WHERE id=$${nextParamCount} RETURNING id::int, title, description, status, assignee, project, created_at AS "createdAt", updated_at AS "updatedAt"`
+	query += `, updated_at=NOW() WHERE id=$${nextParamCount} RETURNING id::int, title, description, status, assignee, project, created_at AS "createdAt", updated_at AS "updatedAt"`;
 	queryValues.push(id);
 
 	if (needsComma) {

@@ -2,10 +2,11 @@ import { pool } from "../db/pool";
 
 export async function putProjects(_req: any, _res: any) {
 	const project = _req.body.project.trim(); // Pre-Validated
+	const description = _req.body.description.trim(); // Pre-Validated
 	const id = _req.params.id; // Pre-Validated
 
 	try {
-		const response = await makeProject(id, project);
+		const response = await makeProject(id, project, description);
 
 		if (response.rows[0].updatedAt.getTime() === response.rows[0].createdAt.getTime()) {
 			_res.status(201).json({
@@ -25,15 +26,24 @@ export async function putProjects(_req: any, _res: any) {
 	}
 }
 
-async function makeProject(id: any, project: any) {
+async function makeProject(id: any, project: any, description: any) {
+
+	if (!description) {
+		description = ``;
+	}
+	//if (!owner) {
+	//	// TODO PULL FROM REQUESTOR
+	//	owner = 0;
+	//}
+	var owner = 0;
 
 	// must set defaults if needed (for update section)
-	const queryValues = [id, project];
-	const query = `INSERT INTO projects (id, project)
-				   VALUES ($1, $2)
+	const queryValues = [id, project, owner, description];
+	const query = `INSERT INTO projects (id, project, owner, description)
+				   VALUES ($1, $2, $3, $4)
 				   ON CONFLICT (id)
-				   DO UPDATE SET project=EXCLUDED.project, updated_at=NOW()
-				   RETURNING id::int, project, created_at AS "createdAt", updated_at AS "updatedAt"`;
+				   DO UPDATE SET project=EXCLUDED.project, owner=EXCLUDED.owner, description=EXCLUDED.description, updated_at=NOW()
+				   RETURNING id::int, project, owner, description, created_at AS "createdAt", updated_at AS "updatedAt"`;
 
 	return pool.query(query, queryValues);
 }
