@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { env } from "./config/env";
-import { initAdmin } from "./env";
+import { env, initAdmin } from "./config/env";
 
 import { logRequest } from "./middleware/requestLogger";
 import { validateTasks, validateTasksId } from "./middleware/tasksValidators";

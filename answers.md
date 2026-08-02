@@ -1,36 +1,66 @@
-# Reflection
+# Reflection Questions
 
-## What is the difference between an in-memory API and a database-backed API?
-Persistence is the primary functional difference. In-house solutions are 
-possible to do the same thing, but they are more likely to have bugs or
-performance issues.
+## What is the difference between authentication and authorization?
+Authentication proves who the user is. It allows the server to 'know'
+who is accessing it even if they are on a different machine than
+normal and across sessions.
 
-## Why is it useful to separate routes, services, and database logic?
-It makes the code easier to navigate and read. Furthermore, since 
-Express functions are order dependent (the order of attachment matters),
-it makes it easier to modify the order when needed since the developer
-does not need to move blocks of code.
+Authorization uses the authentication to ensure that the user has the
+privileges to access the requested data or perform the specified 
+function.
 
-## What HTTP status codes did you use, and why?
-I used:
-- 200: for successful actions not resulting in a new task or the deletion of a task
-- 201: for successfully creating a new task
-- 204: for successfully deleting a task
-- 400: for invalid IDs
-- 400: for invalid Titles
-- 404: for methods with valid IDs that don't have a corresponding task in the database
-- 404: for attempting a route that doesn't exist
-- 500: for database errors
+## Why should passwords be hashed instead of stored directly?
+Passwords should be hashed in case the database leaks. If a bad actor get ahold
+of the hashes, it doesn't tell them anything unless they are capable of reversing
+the function used to generate the hash, a notoriously difficult feat.
 
-## What happens when a client requests a task ID that does not exist?
-Depends. If `id` < 1 OR `id` > NEXT SERIAL KEY, then a `400` is returned.
-Otherwise, if the id is valid and the task doesn't exist, a `404` is 
-returned. Notably, if a `404` is returned, a `put` can make a new task 
-there.
+## What information did you include in your JWT, and why?
+To be honest, I just used the one from the example. However, if I
+were a bit more selective, the only thing I could leave off is the
+username. The id and role are both used to determine privileges. The
+role is used for coarse-grain privileges and the id is used for 
+fine-grain privileges.
 
-## What was the hardest part of connecting the API to PostgreSQL?
-I had to switch the image to `postgres:16-alpine` from `postgres:16`
-for the DB to run on my Windows machine. I still don't know exactly
-why and I hope it doesn't cause future issues... Otherwise, I've had
-some experience with a couple types of SQL DBs in the workforce, so
-I am familiar with the basics.
+## What is the difference between a 401 response and a 403 response?
+A 401 should be returned when a route requires an authenticated user.
+That is to say, a user must be 'logged in' to call this route. A 403
+means that a user is 'logged in' but does not have the priviledges to
+execute the requested route.
+
+## Where does your application perform role or ownership checks?
+I tried to use the middleware where at all possible but as you will 
+read in my reflections, I screwed up in a previous architectural/design
+phase. Since I decided to keep the milestone 4 design choices and keep 
+moving on, I ended up having to implement it directly into the routes.
+In `roleValidation.ts`, there are some methods that are commonly used
+to determine ownership. Both self-identity and local role checks are
+done locally since they are only 1-liners.
+
+This is not optimal and a better design would allow me to more easily
+check the 'roles' and 'pseudo-roles' (owner, member) through the
+middleware. To do this, one would need a function to relate columns
+to specific roles and that perform authorization checks.
+
+## How are users, projects, and tasks related in your database?
+There are 4 roles/psuedo-roles:
+- admin: can do pretty much anything, see `README.md` for more
+- user-owner: has access to most project level routes for their projects
+- user-member: has access to task level routes for projects they are members of
+- user-non-member: can view orphaned tasks, can create projects (becoming the owner), can change information about self
+
+Any role contains the the lower level privileges as well.
+
+Relationships:
+- Owners own projects
+- Projects have members
+- Projects have tasks (which can be assigned to users)
+
+## What was the hardest part of adding authentication or authorization?
+I think I tried to go a bit too far for the mistakes I made prior, so
+a lot of the routes are dissimilar. This means each implementation is
+custom to the route. This is pretty bad for maintainability unfortunately
+and I would do it very different if I were to do it again. The main
+thing that tripped me up was creating a simple Users and Projects table,
+adding all the routes that Tasks had to them, and then adding all the 
+fields in the assignment description without thinking how it'd impact
+milestone 5 & 6.

@@ -45,6 +45,82 @@ paths:
                   currentTime:
                     type: string
                     example: "2026-07-14T03:53:33.567Z"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+  /login:
+    post:
+      summary: logs user in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/login"
+      responses:
+        "200":
+          description: user is logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jwt:
+                    type: object
+                    example: "ok"
+        "400":
+          description: Username or Password missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Username or Password does not match
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+  /register:
+    post:
+      summary: makes a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/login"
+      responses:
+        "200":
+          description: user is made
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: object
+                    example: "admin"
+        "400":
+          description: Username or Password missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
         "500":
           description: Database connection is down
           content:
@@ -63,6 +139,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ReturnTask"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
         "500":
           description: Database connection is down
           content:
@@ -90,6 +172,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot create a task under this project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
         "404":
           description: User/project id does not exist
           content:
@@ -121,11 +215,23 @@ paths:
               schema:
                 $ref: "#/components/schemas/ReturnTask"
         "400":
-          description: ID is not a number, is zero or less, or greater than the max ID
+          description: ID is not a number
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot read a task under this project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
         "404":
           description: Task with supplied id does not exist
           content:
@@ -168,11 +274,23 @@ paths:
               schema:
                 $ref: "#/components/schemas/ReturnTask"
         "400":
-          description: There is an issue with the ID or Title. The ID could be not a number, zero or less, or greater than the current max ID. The title could be missing or malformed.
+          description: There is an issue with the ID or Title. The ID could be not a number. The title could be missing or malformed.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot create or modify a task under one of the projects
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
         "404":
           description: User/project id does not exist
           content:
@@ -214,6 +332,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot modify a task under one of the project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
         "404":
           description: Task with supplied id does not exist OR user/project id does not exist
           content:
@@ -239,6 +369,18 @@ paths:
       responses:
         "204":
           description: The requested task was deleted
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot delete a task under one of the project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
         "404":
           description: Task with supplied id does not exist
           content:
@@ -251,6 +393,527 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DatabaseError"
+  /projects:
+    get:
+      summary: Gets the list of all projects
+      responses:
+        "200":
+          description: List of all projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReturnProject"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    post:
+      summary: Makes a new project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProject"
+      responses:
+        "201":
+          description: Successfully created project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnProject"
+        "400":
+          description: project is missing or misformated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+  /projects/{id}:
+    get:
+      summary: Gets the project with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The project ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: The requested project was returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnProject"
+        "400":
+          description: ID is not a number
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot read this project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "404":
+          description: Project with supplied id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    put:
+      summary: replaces the project with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The project ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProject"
+      responses:
+        "200":
+          description: The requested task was replaced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnProject"
+        "201":
+          description: A new task was made at the ID number supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnProject"
+        "400":
+          description: There is an issue with the ID or Title. The ID could be not a number. The title could be missing or malformed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot create or modify the projects
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "404":
+          description: project id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    patch:
+      summary: updates the project with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The project ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchProject"
+      responses:
+        "200":
+          description: The requested task was updated (Must have one field other than 'id' to receive. Will get a 400 if only 'id' is filled)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnProject"
+        "400":
+          description: Request Issue (Missing Fields, Invalid Type, Invalid Data)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot modify the project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "404":
+          description: Project with supplied id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    delete:
+      summary: deletes the project with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The project ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "204":
+          description: The requested project was deleted
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot delete a task under one of the project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "404":
+          description: Task with supplied id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+  /users:
+    get:
+      summary: Gets the list of all users
+      responses:
+        "200":
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReturnUser"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot get all users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    post:
+      summary: Makes a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUser"
+      responses:
+        "201":
+          description: Successfully created user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnUser"
+        "400":
+          description: username or password is malformed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot make user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+  /users/{id}:
+    get:
+      summary: Gets the user with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The user ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: The requested user was returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnUser"
+        "400":
+          description: ID is not a number
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot read this user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "404":
+          description: User with supplied id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    put:
+      summary: replaces the user with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The user ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUser"
+      responses:
+        "200":
+          description: The requested user was replaced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnUser"
+        "201":
+          description: A new user was made at the ID number supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnUser"
+        "400":
+          description: There is an issue with the username or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot create or modify users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "404":
+          description: user id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    patch:
+      summary: updates the user with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The user ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchUser"
+      responses:
+        "200":
+          description: The requested user was updated (Must have one field other than 'id' to receive. Will get a 400 if only 'id' is filled)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReturnUser"
+        "400":
+          description: Request Issue (Missing Fields, Invalid Type, Invalid Data)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot modify a user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "404":
+          description: User with supplied id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+    delete:
+      summary: deletes the user with the supplied id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The user ID from the URL path.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "204":
+          description: The requested user was deleted
+        "401":
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "403":
+          description: User cannot other user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Forbidden"
+        "404":
+          description: User with supplied id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "500":
+          description: Database connection is down
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatabaseError"
+
 components:
   schemas:
     DatabaseError:
@@ -327,6 +990,97 @@ components:
         project:
           type: integer
           example: 2
+    ReturnProject:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        project:
+          type: string
+          example: "Some Name"
+        owner:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: "Some Text"
+        createdAt:
+          type: string
+          example: "2026-07-14T03:53:33.567Z"
+        updatedAt:
+          type: string
+          example: "2026-07-14T03:53:33.567Z"
+    CreateProject:
+      type: object
+      required:
+        - project
+      properties:
+        project:
+          type: string
+          example: "Some Name"
+        description:
+          type: string
+          example: "Some Text"
+    PatchProject:
+      type: object
+      properties:
+        project:
+          type: string
+          example: "Some Name"
+        owner:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: "Some Text"
+    ReturnUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "Some Name"
+        email:
+          type: string
+          example: "Some Text"
+        role:
+          type: string
+          example: "user"
+        createdAt:
+          type: string
+          example: "2026-07-14T03:53:33.567Z"
+        updatedAt:
+          type: string
+          example: "2026-07-14T03:53:33.567Z"
+    CreateUser:
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+          example: "Some Name"
+        email:
+          type: string
+          example: "Some Text"
+        role:
+          type: string
+          example: "user"
+    PatchUser:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "Some Name"
+        email:
+          type: string
+          example: "Some Text"
+        role:
+          type: string
+          example: "user"
     BadRequest:
       type: object
       properties:
@@ -342,3 +1096,30 @@ components:
         error:
           type: string
           example: Task not found.
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Unauthorized"
+        message:
+          type: string
+          example: "The access token is missing, invalid, or expired."
+    Forbidden:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Forbidden"
+        message:
+          type: string
+          example: "This action requires one of these roles: admin, member (of project)."
+    login:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "admin"
+        password:
+          type: string
+          example: "admin"

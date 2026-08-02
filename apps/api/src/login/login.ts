@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { pool } from "../db/pool";
-import { jwtSecret, jwtExpiresIn } from "../env";
+import { jwtSecret, jwtExpiresIn } from "../config/env";
 
 export async function login(_req: any, _res: any) {
     const username = _req.body?.username?.trim();

@@ -25,6 +25,13 @@ export async function putTasks(_req: any, _res: any) {
 			});
 		}
 
+		if (_req.user.role !== "admin" && project && !(await isMember(_req.user.sub, project))) {
+			return _res.status(403).json({
+				error: "Forbidden",
+				message: `This action requires one of these roles: admin, member (of project).`
+			});
+		}
+
 		const response = await makeTask(id, title, description, status, assignee, project);
 
 		if (response.rows[0].updatedAt.getTime() === response.rows[0].createdAt.getTime()) {

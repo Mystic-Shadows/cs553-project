@@ -4,9 +4,10 @@ export async function putProjects(_req: any, _res: any) {
 	const project = _req.body.project.trim(); // Pre-Validated
 	const description = _req.body.description.trim(); // Pre-Validated
 	const id = _req.params.id; // Pre-Validated
+	const owner = Number(_req.user.sub);
 
 	try {
-		const response = await makeProject(id, project, description);
+		const response = await makeProject(id, project, description, owner);
 
 		if (response.rows[0].updatedAt.getTime() === response.rows[0].createdAt.getTime()) {
 			_res.status(201).json({
@@ -26,16 +27,11 @@ export async function putProjects(_req: any, _res: any) {
 	}
 }
 
-async function makeProject(id: any, project: any, description: any) {
+async function makeProject(id: any, project: any, description: any, owner: any) {
 
 	if (!description) {
 		description = ``;
 	}
-	//if (!owner) {
-	//	// TODO PULL FROM REQUESTOR
-	//	owner = 0;
-	//}
-	var owner = 0;
 
 	// must set defaults if needed (for update section)
 	const queryValues = [id, project, owner, description];

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { jwtSecret } from "../env";
+import { jwtSecret } from "../config/env";
 
 export function authenticateToken(req: any, res: any, next: any) {
     const authorization = req.get("authorization");
