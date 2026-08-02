@@ -1,14 +1,29 @@
 import { pool } from "../db/pool";
+import bcrypt from "bcryptjs";
 
 export async function patchUsers(_req: any, _res: any) {
 	const username = _req.body?.username?.trim(); // Pre-Validated
-	const id = _req.params.id;
+	const password = _req.body?.password?.trim(); // Pre-Validated
+	const id = Number(_req.params.id);
 	const email = _req.body?.email;
 	const role = _req.body?.role;
 
+	if (_req.user.role !== "admin" && _req.user.sub != id) {
+		return _res.status(403).json({
+			error: "Forbidden",
+			message: `This action requires one of these roles: admin, self==id.`
+		});
+	}
+
 	try {
-		const response = await patchUser(id, username, email, role);
-		if (response === null) {
+		const response = await patchUser(id, username, email, role, password, _req.user.role);
+
+		if (!response) {
+			return _res.status(403).json({
+				error: "Forbidden",
+				message: `This action requires one of these roles: admin.`
+			});
+		} else if (response === null) {
 			_res.status(400).json({ error: "No valid changes in request" });
 		} else if (response.rows.length === 0) {
 			_res.status(404).json({ error: "User not found" });
@@ -32,7 +47,7 @@ export async function patchUsers(_req: any, _res: any) {
 	}
 }
 
-async function patchUser(id: any, username: any, email: any, role: any) {
+async function patchUser(id: any, username: any, email: any, role: any, password: any, current_role: any) {
 
 	const queryValues = [];
 
@@ -59,11 +74,24 @@ async function patchUser(id: any, username: any, email: any, role: any) {
 	}
 
 	if (role) {
+		if (current_role !== "admin") {
+			return false;
+		}
 		if (needsComma) {
 			query += `, `;
 		}
 		query += ` role=$${nextParamCount}`;
 		queryValues.push(role);
+		nextParamCount++;
+		needsComma = true;
+	}
+
+	if (password) {
+		if (needsComma) {
+			query += `, `;
+		}
+		query += ` password_hash=$${nextParamCount}`;
+		queryValues.push(await bcrypt.hash(password, 10));
 		nextParamCount++;
 		needsComma = true;
 	}

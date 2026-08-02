@@ -11,12 +11,12 @@ Add authentication to the system.
 
 ## Requirements
 
-- [ ] Add user registration endpoint
-- [ ] Add login endpoint
-- [ ] Hash passwords securely
-- [ ] Generate JWT access tokens
-- [ ] Add authentication middleware
-- [ ] Protect task/project routes
+- [X] Add user registration endpoint
+- [X] Add login endpoint
+- [X] Hash passwords securely
+- [X] Generate JWT access tokens
+- [X] Add authentication middleware
+- [X] Protect task/project routes
 
 ## Deliverable
 

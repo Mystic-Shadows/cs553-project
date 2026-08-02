@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./env.js";
+import { API_BASE_URL, authHeaders } from "./../env.js";
 
 /* 
     INPUT
@@ -22,7 +22,7 @@ async function getTask(event) {
     const id = getTaskId.value;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/tasks/${id}`);
+        const response = await fetch(`${API_BASE_URL}/tasks/${id}`, { headers: authHeaders() });
         if (response.status === 404) {
             getTaskText.textContent = `Task ${id} not found`;
         } else if (!response.ok) {

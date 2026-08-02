@@ -6,7 +6,7 @@
 	- `cs553-project/apps/`
 	- `cs553-project/apps/api`
 2. Go back to `cs553-project/` and run `npm run db:start`
-3. Next, run `$ psql -h localhost -p 5432 -U postgres -d cs453`
+3. Next, run `psql postgresql://postgres:postgres@localhost:5432/cs453 -f database/schema.sql`
 4. Run the server using `npm run dev`
 5. In another terminal, run the test client using Run the server using `npm run client:dev`
 6. Connect to the website through a browser at `http://localhost:5173/`
@@ -17,7 +17,7 @@
 
 ### Other Commands
 - Close database: `npm run db:stop`
-- Reset database: `npm run db:stop`
+- Reset database: `npm run db:reset`
 
 ## File Structure
 ```text

@@ -1,4 +1,5 @@
 import { pool } from "../db/pool";
+import { isOwner } from "../middleware/roleValidation";
 
 export async function getAuthorizations(_req: any, _res: any) {
 	try {
@@ -9,7 +10,18 @@ export async function getAuthorizations(_req: any, _res: any) {
 			ORDER BY user_id `,
 		);
 
-		_res.json({ authorizations: response.rows });
+		if (_req.user.role === "admin") {
+			_res.json({ authorizations: response.rows });
+		} else {
+			const authorizations = [];
+			for (var authorization of response.rows) {
+				if (authorization.userId == _req.user.sub  || await isOwner(_req.user.sub, authorization.projectId)) {
+					authorizations.push(authorization);
+				}
+			}
+			_res.json({ authorizations });
+		}
+		
 	} catch (error) {
 		console.error("Failed to fetch authorizations:", error);
 		_res.status(500).json({

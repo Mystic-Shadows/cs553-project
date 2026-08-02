@@ -1,8 +1,16 @@
 import { pool } from "../db/pool";
+import { isOwner } from "../middleware/roleValidation";
 
 export async function postAuthorizations(_req: any, _res: any) {
 	const user = Number(_req.body.userId.trim()); // Pre-Validated
 	const project = Number(_req.body.projectId.trim()); // Pre-Validated
+
+	if (_req.user.role !== "admin" && !(await isOwner(_req.user.sub, project))) {
+		return _res.status(403).json({
+			error: "Forbidden",
+			message: `This action requires one of these roles: admin, owner (of project).`
+		});
+	}
 
 	try {
 		const response = await makeAuthorization(user, project);

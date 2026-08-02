@@ -1,4 +1,5 @@
 import { pool } from "../db/pool";
+import { isMember } from "../middleware/roleValidation";
 
 export async function putTasks(_req: any, _res: any) {
 	const title = _req.body.title.trim(); // Pre-Validated
@@ -10,6 +11,20 @@ export async function putTasks(_req: any, _res: any) {
 	const project = Number(_req.body?.project?.trim());
 
 	try {
+		const info = await pool.query(
+			`SELECT project
+			FROM tasks
+			WHERE id=$1 `, [id]
+		);
+
+		const project_sel = info?.rows[0]?.project;
+		if (_req.user.role !== "admin" && project_sel && !(await isMember(_req.user.sub, project_sel))) {
+			return _res.status(403).json({
+				error: "Forbidden",
+				message: `This action requires one of these roles: admin, member (of project).`
+			});
+		}
+
 		const response = await makeTask(id, title, description, status, assignee, project);
 
 		if (response.rows[0].updatedAt.getTime() === response.rows[0].createdAt.getTime()) {

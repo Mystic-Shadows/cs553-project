@@ -3,9 +3,7 @@ import { pool } from "../db/pool";
 export async function postProjects(_req: any, _res: any) {
 	const project = _req.body.project.trim(); // Pre-Validated
 	const description = _req.body.description.trim(); // Pre-Validated
-
-	// TODO PULL FROM REQUESTOR
-	const owner = 0;
+	const owner = Number(_req.user.sub);
 
 	try {
 		const response = await makeProject(project, owner, description);

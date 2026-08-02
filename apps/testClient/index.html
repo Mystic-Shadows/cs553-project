@@ -14,6 +14,20 @@
                 Basic Form for interacting with the Project
             </p>
 
+            <h1>Login/Registration</h1>
+            <form id="login-form">
+                <label style="display: block; text-align: left;">username</label>
+                <input id="login-username" name="login-username" type="text" required>
+                <label style="display: block; text-align: left;">password</label>
+                <input id="login-password" name="login-password" type="text" required>
+                <div class="button-group">
+                    <button type="submit" name="action" value="login">Login</button>
+                    <button type="submit" name="action" value="register">Register</button>
+                </div>
+            </form>
+            <p id="login-status" class="status"></p>
+
+            <h1>Health</h1>
             <h2>Get Health</h2>
             <p>Returns if the server is up</p>
             <button id="get-health" type="button">Get Health</button>
@@ -24,6 +38,7 @@
             <button id="get-database-health" type="button">Get Database Health</button>
             <p id="database-health" class="health">Unknown</p>
 
+            <h1>Tasks</h1>
             <h2>Get Tasks</h2>
             <p>Returns all tasks stored in the server</p>
             <button id="get-tasks" type="button">Get Tasks</button>
@@ -125,17 +140,242 @@
                 <button type="submit">Delete Task</button>
             </form>
             <p id="delete-status" class="status"></p>
+
+
+
+            <h1>Projects</h1>
+            <h2>Get Projects</h2>
+            <p>Returns all projects stored in the server</p>
+            <button id="get-projects" type="button">Get Projects</button>
+            <ul id="projects" class="projects"></ul>
+
+            <h2>Get Project</h2>
+            <p>Returns the project associated with the supplied ID</p>
+            <form id="get-project-form">
+                <label style="display: block; text-align: left;">Project ID</label>
+                <input id="get-project-id" name="get-project-id" type="number" required>
+                <button type="submit">Get Project</button>
+            </form>
+            <p id="project" class="project"></p>
+
+            <h2>Make Project (POST)</h2>
+            <p>Makes a new project</p>
+            <form id="post-project-form">
+                <label style="display: block; text-align: left;">Name</label>
+                <input id="post-project-name" name="post-project-name" type="text" required>
+                <label style="display: block; text-align: left;">Description</label>
+                <input id="post-project-description" name="post-project-description" type="text">
+                <button type="submit">Make Project</button>
+            </form>
+            <p id="post-project-status" class="project-status"></p>
+
+            <h2>Replace Project (PUT)</h2>
+            <p>Replaces a project or makes a new project (only if the id was previously used)</p>
+            <form id="put-project-form">
+                <label style="display: block; text-align: left;">Project ID</label>
+                <input id="put-project-id" name="put-project-id" type="number" required>
+                <label style="display: block; text-align: left;">Name</label>
+                <input id="put-project-name" name="put-project-name" type="text" required>
+                <label style="display: block; text-align: left;">Description</label>
+                <input id="put-project-description" name="put-project-description" type="text">
+                <button type="submit">Make Project</button>
+            </form>
+            <p id="put-project-status" class="project-status"></p>
+
+            <h2>Edit Project (PATCH)</h2>
+            <p>Modifies the project that has the supplied ID</p>
+            <form id="patch-project-form">
+                <label style="display: block; text-align: left;">ID</label>
+                <input id="patch-project-id" name="patch-project-id" type="number" required>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Name</label>
+                        <input id="patch-project-name" name="patch-project-name" type="text">
+                    </div>
+                    <button type="submit" name="action" value="name">Edit Name</button>
+                </div>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Owner</label>
+                        <input id="patch-project-owner" name="patch-project-owner" type="number">
+                    </div>
+                    <button type="submit" name="action" value="owner">Edit Owner</button>
+                </div>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Description</label>
+                        <input id="patch-project-description" name="patch-project-description" type="text">
+                    </div>
+                    <button type="submit" name="action" value="description">Edit Description</button>
+                </div>
+            </form>
+            <p id="patch-project-status" class="project-status"></p>
+
+            <h2>Delete Project</h2>
+            <p>Removes the project with the supplied ID</p>
+            <form id="delete-project-form">
+                <label style="display: block; text-align: left;">Project ID</label>
+                <input id="delete-project-id" name="delete-project-id" type="number" required>
+                <button type="submit">Delete Project</button>
+            </form>
+            <p id="delete-project-status" class="project-status"></p>
+
+
+
+            <h1>Users</h1>
+            <h2>Get Users</h2>
+            <p>Returns all users stored in the server</p>
+            <button id="get-users" type="button">Get Users</button>
+            <ul id="users" class="users"></ul>
+
+            <h2>Get User</h2>
+            <p>Returns the user associated with the supplied ID</p>
+            <form id="get-user-form">
+                <label style="display: block; text-align: left;">User ID</label>
+                <input id="get-user-id" name="get-user-id" type="number" required>
+                <button type="submit">Get User</button>
+            </form>
+            <p id="user" class="user"></p>
+
+            <h2>Make User (POST)</h2>
+            <p>Makes a new user</p>
+            <form id="post-user-form">
+                <label style="display: block; text-align: left;">Name</label>
+                <input id="post-user-name" name="post-user-name" type="text" required>
+                <label style="display: block; text-align: left;">Email</label>
+                <input id="post-user-email" name="post-user-email" type="text">
+                <label style="display: block; text-align: left;">Role</label>
+                <input id="post-user-role" name="post-user-role" type="text">
+                <label style="display: block; text-align: left;">Password</label>
+                <input id="post-user-password" name="post-user-password" type="text" required>
+                <button type="submit">Make User</button>
+            </form>
+            <p id="post-user-status" class="user-status"></p>
+
+            <h2>Replace User (PUT)</h2>
+            <p>Replaces a user or makes a new user (only if the id was previously used)</p>
+            <form id="put-user-form">
+                <label style="display: block; text-align: left;">User ID</label>
+                <input id="put-user-id" name="put-user-id" type="number" required>
+                <label style="display: block; text-align: left;">Name</label>
+                <input id="put-user-name" name="put-user-name" type="text" required>
+                <label style="display: block; text-align: left;">Email</label>
+                <input id="put-user-email" name="put-user-email" type="text">
+                <label style="display: block; text-align: left;">Role</label>
+                <input id="put-user-role" name="put-user-role" type="text">
+                <label style="display: block; text-align: left;">Password</label>
+                <input id="put-user-password" name="put-user-password" type="text" required>
+                <button type="submit">Make User</button>
+            </form>
+            <p id="put-user-status" class="user-status"></p>
+
+            <h2>Edit User (PATCH)</h2>
+            <p>Modifies the user that has the supplied ID</p>
+            <form id="patch-user-form">
+                <label style="display: block; text-align: left;">ID</label>
+                <input id="patch-user-id" name="patch-user-id" type="number" required>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Name</label>
+                        <input id="patch-user-name" name="patch-user-name" type="text">
+                    </div>
+                    <button type="submit" name="action" value="name">Edit Name</button>
+                </div>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Email</label>
+                        <input id="patch-user-email" name="patch-user-email" type="text">
+                    </div>
+                    <button type="submit" name="action" value="email">Edit Email</button>
+                </div>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Role</label>
+                        <input id="patch-user-role" name="patch-user-role" type="text">
+                    </div>
+                    <button type="submit" name="action" value="role">Edit Role</button>
+                </div>
+                <div class="button-group">
+                    <div>
+                        <label style="display: block; text-align: left;">Password</label>
+                        <input id="patch-user-password" name="patch-user-password" type="text">
+                    </div>
+                    <button type="submit" name="action" value="password">Edit Password</button>
+                </div>
+            </form>
+            <p id="patch-user-status" class="user-status"></p>
+
+            <h2>Delete User</h2>
+            <p>Removes the user with the supplied ID</p>
+            <form id="delete-user-form">
+                <label style="display: block; text-align: left;">User ID</label>
+                <input id="delete-user-id" name="delete-user-id" type="number" required>
+                <button type="submit">Delete User</button>
+            </form>
+            <p id="delete-user-status" class="user-status"></p>
+
+
+
+            <h1>Authorizations</h1>
+            <h2>Get Authorizations</h2>
+            <p>Returns all authorizations stored in the server</p>
+            <button id="get-authorizations" type="button">Get Authorizations</button>
+            <ul id="authorizations" class="authorizations"></ul>
+
+            <h2>Make Authorization (POST)</h2>
+            <p>Makes a new authorization</p>
+            <form id="post-authorizations-form">
+                <label style="display: block; text-align: left;">UserId</label>
+                <input id="post-authorizations-userId" name="post-authorizations-userId" type="number">
+                <label style="display: block; text-align: left;">ProjectId</label>
+                <input id="post-authorizations-projectId" name="post-authorizations-projectId" type="number">
+                <button type="submit">Make Authorization</button>
+            </form>
+            <p id="post-authorizations-status" class="authorizations-status"></p>
+
+            <h2>Delete Authorization</h2>
+            <p>Removes the listed Authorization</p>
+            <form id="delete-authorizations-form">
+                <label style="display: block; text-align: left;">UserId</label>
+                <input id="delete-authorizations-userId" name="delete-authorizations-userId" type="number">
+                <label style="display: block; text-align: left;">ProjectId</label>
+                <input id="delete-authorizations-projectId" name="delete-authorizations-projectId" type="number">
+                <button type="submit">Delete Authorization</button>
+            </form>
+            <p id="delete-authorizations-status" class="authorizations-status"></p>
+
         </section>
     </main>
 
-    <script type="module" src="./scripts/health.js"></script>
-    <script type="module" src="./scripts/databaseHealth.js"></script>
-    <script type="module" src="./scripts/getTasks.js"></script>
-    <script type="module" src="./scripts/getTask.js"></script>
-    <script type="module" src="./scripts/postTasks.js"></script>
-    <script type="module" src="./scripts/deleteTasks.js"></script>
-    <script type="module" src="./scripts/putTasks.js"></script>
-    <script type="module" src="./scripts/patchTasks.js"></script>
+    <script type="module" src="./scripts/health/health.js"></script>
+    <script type="module" src="./scripts/health/databaseHealth.js"></script>
+
+    <script type="module" src="./scripts/tasks/getTasks.js"></script>
+    <script type="module" src="./scripts/tasks/getTask.js"></script>
+    <script type="module" src="./scripts/tasks/postTasks.js"></script>
+    <script type="module" src="./scripts/tasks/deleteTasks.js"></script>
+    <script type="module" src="./scripts/tasks/putTasks.js"></script>
+    <script type="module" src="./scripts/tasks/patchTasks.js"></script>
+
+    <script type="module" src="./scripts/projects/getProjects.js"></script>
+    <script type="module" src="./scripts/projects/getProject.js"></script>
+    <script type="module" src="./scripts/projects/deleteProjects.js"></script>
+    <script type="module" src="./scripts/projects/postProjects.js"></script>
+    <script type="module" src="./scripts/projects/patchProjects.js"></script>
+    <script type="module" src="./scripts/projects/putProjects.js"></script>
+
+    <script type="module" src="./scripts/users/getUsers.js"></script>
+    <script type="module" src="./scripts/users/getUser.js"></script>
+    <script type="module" src="./scripts/users/deleteUsers.js"></script>
+    <script type="module" src="./scripts/users/postUsers.js"></script>
+    <script type="module" src="./scripts/users/patchUsers.js"></script>
+    <script type="module" src="./scripts/users/putUsers.js"></script>
+    
+    <script type="module" src="./scripts/authorizations/getAuthorizations.js"></script>
+    <script type="module" src="./scripts/authorizations/postAuthorizations.js"></script>
+    <script type="module" src="./scripts/authorizations/deleteAuthorizations.js"></script>
+
+    <script type="module" src="./scripts/login_register/loginBlock.js"></script>
 
 </body>
 </html>

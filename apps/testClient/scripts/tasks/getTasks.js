@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./env.js";
+import { API_BASE_URL, authHeaders } from "./../env.js";
 
 /* 
     INPUT
@@ -15,7 +15,7 @@ const getTasksList = document.querySelector("#tasks");
 */
 async function getTasks() {
     try {
-        const response = await fetch(`${API_BASE_URL}/tasks`);
+        const response = await fetch(`${API_BASE_URL}/tasks`, {headers: authHeaders()});
 
         if (!response.ok) {
             throw new Error(`GET /tasks failed with status ${response.status}`);

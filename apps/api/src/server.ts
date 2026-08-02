@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { env } from "./config/env";
+import { initAdmin } from "./env";
 
 import { logRequest } from "./middleware/requestLogger";
 import { validateTasks, validateTasksId } from "./middleware/tasksValidators";
@@ -8,6 +9,7 @@ import { validateProjects, validateProjectsId } from "./middleware/projectsValid
 import { validateUsers, validateUsersId } from "./middleware/usersValidators";
 import { validateAuthorizations } from "./middleware/authorizationsValidators";
 import { authenticateToken } from "./middleware/validateToken";
+import { requireRole } from "./middleware/roleValidation";
 
 import { health } from "./health/health";
 import { dbHealth } from "./health/dbHealth";
@@ -41,6 +43,8 @@ import { login } from "./login/login"
 import { register } from "./register/register";
 
 const app = express();
+
+initAdmin();
 
 app.use(cors({
     origin: [
@@ -82,20 +86,20 @@ app.delete("/tasks/:id", deleteTasks);
 app.patch("/tasks/:id", patchTasks);
 
 // Project Routes
-app.get("/projects", getProjects);
-app.post("/projects", postProjects);
-app.get("/projects/:id", getProject);
-app.patch("/projects/:id", patchProjects);
-app.delete("/projects/:id", deleteProjects);
-app.put("/projects/:id", putProjects);
+app.get("/projects", getProjects); // [X]
+app.post("/projects", postProjects); // [X]
+app.get("/projects/:id", getProject); // [X]
+app.patch("/projects/:id", patchProjects); // [X]
+app.delete("/projects/:id", deleteProjects); // [X]
+app.put("/projects/:id", requireRole("admin"), putProjects);
 
 // User Routes
-app.get("/users", getUsers);
-app.post("/users", postUsers);
-app.get("/users/:id", getUser);
-app.patch("/users/:id", patchUsers);
-app.delete("/users/:id", deleteUsers);
-app.put("/users/:id", putUsers);
+app.get("/users", requireRole("admin"), getUsers);
+app.post("/users", requireRole("admin"), postUsers);
+app.get("/users/:id", getUser); // [X]
+app.patch("/users/:id", patchUsers); // [X]
+app.delete("/users/:id", deleteUsers); // [X]
+app.put("/users/:id", requireRole("admin"), putUsers);
 
 // Authorization Routes
 app.get("/authorizations", getAuthorizations);

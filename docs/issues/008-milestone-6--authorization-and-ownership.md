@@ -11,10 +11,10 @@ Add authorization rules beyond simple login.
 
 ## Requirements
 
-- [ ] Restrict task access by project membership
-- [ ] Add project ownership or membership model
-- [ ] Enforce 401 vs 403 behavior correctly
-- [ ] Prevent users from modifying resources they do not own
+- [X] Restrict task access by project membership
+- [X] Add project ownership or membership model
+- [X] Enforce 401 vs 403 behavior correctly
+- [X] Prevent users from modifying resources they do not own
 
 ## Deliverable
 

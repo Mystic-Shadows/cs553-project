@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./env.js";
+import { API_BASE_URL, authHeaders } from "./../env.js";
 
 /* 
     INPUT
@@ -42,17 +42,13 @@ async function patchTask(event) {
             }
             response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: authHeaders({ "Content-Type": "application/json" }),
                 body: JSON.stringify({ title })
             })
         } else if (clickedButton.value === "description") {
             response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: authHeaders({ "Content-Type": "application/json" }),
                 body: JSON.stringify({ description })
             })
         } else if (clickedButton.value === "status") {
@@ -62,9 +58,7 @@ async function patchTask(event) {
             }
             response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: authHeaders({ "Content-Type": "application/json" }),
                 body: JSON.stringify({ status })
             })
         } else if (clickedButton.value === "assignee") {
@@ -74,9 +68,7 @@ async function patchTask(event) {
             }
             response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: authHeaders({ "Content-Type": "application/json" }),
                 body: JSON.stringify({ assignee })
             })
         } else if (clickedButton.value === "project") {
@@ -86,9 +78,7 @@ async function patchTask(event) {
             }
             response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
                 method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: authHeaders({ "Content-Type": "application/json" }),
                 body: JSON.stringify({ project })
             })
         }
@@ -98,7 +88,7 @@ async function patchTask(event) {
         } else if (response.status === 404) {
             patchTaskText.textContent = `Server Rejected Data: Original Item not Found`;
         } else if (!response.ok) {
-            throw new Error(`PUT /api/tasks failed with status ${response.status}`);
+            throw new Error(`PUT /api/tasks/${id} failed with status ${response.status}`);
         } else {
             const data = await response.json();
             const task = data.task;

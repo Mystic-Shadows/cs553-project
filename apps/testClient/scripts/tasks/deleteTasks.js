@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./env.js";
+import { API_BASE_URL, authHeaders } from "./../env.js";
 
 /* 
     INPUT
@@ -20,11 +20,11 @@ async function deleteTask(event) {
     const id = Number(deleteTaskId.value);
 
     try {
-        const response = await fetch(`${API_BASE_URL}/tasks/${id}`, { method: "DELETE" });
+        const response = await fetch(`${API_BASE_URL}/tasks/${id}`, { headers: authHeaders(), method: "DELETE" });
         if (response.status === 404) {
             deleteTaskText.textContent = `Task ${id} not found`;
         } else if (!response.ok) {
-            throw new Error(`DELETE /api/tasks failed with status ${response.status}`);
+            throw new Error(`DELETE /api/tasks/${id} failed with status ${response.status}`);
         } else {
             deleteTaskText.textContent = `Successfully deleted task ${id}`;
         }

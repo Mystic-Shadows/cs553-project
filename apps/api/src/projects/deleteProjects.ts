@@ -1,7 +1,16 @@
 import { pool } from "../db/pool";
+import { isOwner } from "../middleware/roleValidation";
 
 export async function deleteProjects(_req: any, _res: any) {
-	const id = _req.params.id;
+	const id = Number(_req.params.id);
+
+	if (_req.user.role !== "admin" && !(await isOwner(_req.user.sub, id))) {
+		return _res.status(403).json({
+			error: "Forbidden",
+			message: `This action requires one of these roles: admin, owner (of project).`
+		});
+	}
+
 	try {
 		const response = await pool.query(`DELETE FROM projects WHERE id=$1`, [id]);
 		await pool.query(`DELETE FROM authorizations WHERE project_id=$1`, [id]);

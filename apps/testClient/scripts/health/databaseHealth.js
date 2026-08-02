@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./env.js";
+import { API_BASE_URL, authHeaders } from "./../env.js";
 
 /* 
     INPUT
@@ -16,7 +16,7 @@ const databaseHealthText = document.querySelector("#database-health");
 async function getDatabaseHealth() {
     try {
         databaseHealthText.textContent = `Getting Status`;
-        const response = await fetch(`${API_BASE_URL}/db-health`);
+        const response = await fetch(`${API_BASE_URL}/db-health`, {headers: authHeaders()});
 
         if (!response.ok) {
             throw new Error(`GET /api/db-health failed with status ${response.status}`);
@@ -26,7 +26,7 @@ async function getDatabaseHealth() {
 
     } catch (error) {
         console.error("Issue getting DB Health:", error);
-        databaseHealthText.textContent = `DB is down`;
+        databaseHealthText.textContent = `Issue getting DB Health:, ${error}`;
     }
 }
 getDatabaseHealthButton.addEventListener("click", getDatabaseHealth);

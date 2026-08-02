@@ -1,4 +1,5 @@
 import { pool } from "../db/pool";
+import { isMember, isOwner } from "../middleware/roleValidation";
 
 export async function patchProjects(_req: any, _res: any) {
 	const project = _req.body?.project?.trim(); // Pre-Validated
@@ -6,9 +7,21 @@ export async function patchProjects(_req: any, _res: any) {
 	const description = _req.body?.description?.trim(); // Pre-Validated
 	const id = _req.params.id;
 
+	if (_req.user.role !== "admin" && !(await isOwner(_req.user.sub, id))) {
+		return _res.status(403).json({
+			error: "Forbidden",
+			message: `This action requires one of these roles: admin, owner (of project).`
+		});
+	}
+
 	try {
-		const response = await patchProject(id, project, owner, description);
-		if (response === null) {
+		const response = await patchProject(id, project, owner, description, _req.user.role);
+		if (!response) {
+			return _res.status(403).json({
+				error: "Forbidden",
+				message: `This action requires one of these roles: admin.`
+			});
+		} else if (response === null) {
 			_res.status(400).json({ error: "No valid changes in request" });
 		} else if (response.rows.length === 0) {
 			_res.status(404).json({ error: "Project not found" });
@@ -27,7 +40,7 @@ export async function patchProjects(_req: any, _res: any) {
 	}
 }
 
-async function patchProject(id: any, project: any, owner: any, description: any) {
+async function patchProject(id: any, project: any, owner: any, description: any, current_role: any) {
 
 	const queryValues = [];
 
@@ -54,6 +67,9 @@ async function patchProject(id: any, project: any, owner: any, description: any)
 	}
 
 	if (owner || owner === 0) {
+		if (current_role !== "admin") {
+			return false;
+		}
 		if (needsComma) {
 			query += `, `;
 		}

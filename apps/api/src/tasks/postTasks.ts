@@ -1,4 +1,5 @@
 import { pool } from "../db/pool";
+import { isMember } from "../middleware/roleValidation";
 
 export async function postTasks(_req: any, _res: any) {
 	const title = _req.body.title.trim(); // Pre-Validated
@@ -7,6 +8,13 @@ export async function postTasks(_req: any, _res: any) {
 	const status = _req.body?.status?.trim();
 	const assignee = Number(_req.body?.assignee?.trim());
 	const project = Number(_req.body?.project?.trim());
+
+	if (_req.user.role !== "admin" && project && !(await isMember(_req.user.sub, project))) {
+		return _res.status(403).json({
+			error: "Forbidden",
+			message: `This action requires one of these roles: admin, member (of project), or no project ID.`
+		});
+	}
 
 	try {
 		const response = await makeTask(title, description, status, assignee, project);

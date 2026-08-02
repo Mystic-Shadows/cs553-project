@@ -1,4 +1,5 @@
 import { pool } from "../db/pool";
+import { isMember } from "../middleware/roleValidation";
 
 export async function patchTasks(_req: any, _res: any) {
 	const id = _req.params.id; // Pre-Validated
@@ -10,8 +11,30 @@ export async function patchTasks(_req: any, _res: any) {
 	const project = Number(_req.body?.project?.trim());
 
 	try {
-		const response = await updateTask(id, title, description, status, assignee, project);
-		if (response === null) {
+		const info = await pool.query(
+			`SELECT project
+			FROM tasks
+			WHERE id=$1 `, [id]
+		);
+
+		if (info.rows.length == 0) {
+			_res.status(404).json({ error: "Task not found" });
+		}
+		const project_sel = info.rows[0].project;
+		if (_req.user.role !== "admin" && project_sel && !(await isMember(_req.user.sub, project_sel))) {
+			return _res.status(403).json({
+				error: "Forbidden",
+				message: `This action requires one of these roles: admin, member (of project).`
+			});
+		}
+
+		const response = await updateTask(id, title, description, status, assignee, project, _req.user.role, _req.user.sub);
+		if (!response) {
+			return _res.status(403).json({
+				error: "Forbidden",
+				message: `This action requires one of these roles: admin.`
+			});
+		} if (response === null) {
 			_res.status(400).json({ error: "No valid changes in request" });
 		} else if (response.rows.length === 0) {
 			_res.status(404).json({ error: "Task not found" });
@@ -35,7 +58,9 @@ async function updateTask(id: any,
 	description: any,
 	status: any,
 	assignee: any,
-	project: any
+	project: any,
+	current_role: any,
+	userId: any
 ) {
 
 	const queryValues = [];
@@ -83,6 +108,9 @@ async function updateTask(id: any,
 	}
 
 	if (project || project === 0) {
+		if (current_role !== "admin" && project && !(await isMember(Number(userId), Number(project)))) {
+			return false;
+		}
 		if (needsComma) {
 			query += `, `;
 		}

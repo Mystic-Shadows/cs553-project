@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./env.js";
+import { API_BASE_URL, authHeaders } from "./../env.js";
 
 /* 
     INPUT
@@ -37,16 +37,14 @@ async function putTasks(event) {
     try {
         const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: authHeaders({ "Content-Type": "application/json" }),
             body: JSON.stringify({ title, description, status, assignee, project })
         })
 
         if (response.status === 400) {
             putTaskText.textContent = `Server Rejected Data: Bad Request`;
         } else if (!response.ok) {
-            throw new Error(`PUT /tasks failed with status ${response.status}`);
+            throw new Error(`PUT /tasks/${id} failed with status ${response.status}`);
         } else {
             const data = await response.json();
             const task = data.task;

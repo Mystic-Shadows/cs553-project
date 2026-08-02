@@ -10,6 +10,10 @@ export async function validateUsers(_req: any, _res: any, _next: any) {
         return _res.status(400).json({ error: "Bad Request", message: "Missing or Malformed username" });
     }
 
+    if (["POST", "PUT"].includes(_req.method) && !validatePassword(_req)) {
+        return _res.status(400).json({ error: "Bad Request", message: "Missing or Malformed password" });
+    }
+
     _next();
 }
 
@@ -17,8 +21,10 @@ function validateTypes(_req: any) {
     const username = _req.body?.username?.trim();
     const email = _req.body?.email;
     const role = _req.body?.role?.trim();
+    const password = _req.body?.password?.trim();
 
     if ((username !== undefined && typeof username !== 'string') ||
+        (password !== undefined && typeof password !== 'string') ||
         (email !== undefined && typeof email !== 'string') ||
         (role !== "" && role !== undefined && role !== "user" && role !== "admin")
     ) {
@@ -31,6 +37,15 @@ function validateTypes(_req: any) {
 function validateUser(_req: any) {
     const username = _req.body?.username?.trim();
     if (username && username !== "") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function validatePassword(_req: any) {
+    const password = _req.body?.password?.trim();
+    if (password && password !== "") {
         return true;
     } else {
         return false;

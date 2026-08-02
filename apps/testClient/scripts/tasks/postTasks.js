@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./env.js";
+import { API_BASE_URL, authHeaders } from "./../env.js";
 
 /* 
     INPUT
@@ -35,9 +35,7 @@ async function postTask(event) {
     try {
         const response = await fetch(`${API_BASE_URL}/tasks`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: authHeaders({ "Content-Type": "application/json" }),
             body: JSON.stringify({ title, description, status, assignee, project })
         })
 
